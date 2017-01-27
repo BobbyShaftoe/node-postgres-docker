@@ -1,7 +1,4 @@
-language:                               
-
-node_js:
-  - 6.9.4
+language: node_js
 
 services:                                       
   - postgres                      
