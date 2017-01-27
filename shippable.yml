@@ -1,0 +1,51 @@
+language:                               
+
+node_js:                                      
+  - 6.9.4               
+
+services:                                       
+  - postgres                      
+
+env:                                                
+  - build_name=node-postgres-docker                        
+  - maintainer=nbirdsall
+
+matrix:                                                                 
+
+build:                                                  
+
+  pre_ci:                               
+
+  pre_ci_boot:                          
+    image_name:
+    image_tag:
+    pull:
+    options:
+  ci:
+    - npm install    
+    - mkdir -p shippable/testresults
+    - mkdir -p shippable/codecoverage
+
+  post_ci:
+    -  "ls -la"
+    - docker images
+    - docker commit $SHIPPABLE_CONTAINER_NAME 758085500738.dkr.ecr.us-east-1.amazonaws.com/node-postgres-docker:latest
+    - docker push 758085500738.dkr.ecr.us-east-1.amazonaws.com/node-postgres-docker:latest
+ 
+ on_success:
+    - sh -c "echo It Worked!"
+  on_failure:
+    - sh -c "echo It Broke!"
+  cache:
+  cache_dir_list:
+
+  push:
+
+integrations:
+  hub:
+    - integrationName: AmazonECR
+      type: ecr
+      branches:
+        only:
+          - master
+          - develop
